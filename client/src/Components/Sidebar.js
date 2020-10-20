@@ -1,10 +1,17 @@
 import React, { useState } from "react";
-import { Tab, Nav, Button } from "react-bootstrap";
+import { Tab, Nav, Button, Modal } from "react-bootstrap";
 import Conversations from "./Conversations";
 import Contacts from "./Contacts";
+import NewConversationModal from "./NewConversationModal";
+import NewContactsModal from "./NewContactsModal";
 function Sidebar({ id }) {
   const [activeKey, setActiveKey] = useState("conversations");
+  const [modalOpen, setModalOpen] = useState(false);
+  const [modalClose, setModalClose] = useState(true);
   const conversationsOpen = activeKey === "conversations";
+  const closeModal = () => {
+    setModalOpen(false);
+  };
   return (
     <div style={{ width: "250px" }} className="d-flex flex-column">
       <Tab.Container activeKey={activeKey} onSelect={setActiveKey}>
@@ -27,9 +34,23 @@ function Sidebar({ id }) {
             {" "}
             Your Id: <span className="text-muted">{id}</span>
           </div>
-          <Button>New {conversationsOpn ? "Conversation" : "Contacts"}</Button>
+          <Button
+            className="rounded-0"
+            onClick={() => {
+              setModalOpen(true);
+            }}
+          >
+            New {conversationsOpen ? "Conversation" : "Contacts"}
+          </Button>
         </Nav>
       </Tab.Container>
+      <Modal show={modalOpen} onHide={closeModal}>
+        {conversationsOpen ? (
+          <NewConversationModal closeModal={closeModal} />
+        ) : (
+          <NewContactsModal closeModal={closeModal} />
+        )}
+      </Modal>
     </div>
   );
 }
